@@ -6,7 +6,7 @@ import { ProductListItem } from "./productListItem";
 import styles from "../page.module.css";
 import React from "react";
 export const ProductList = () => {
-  //useEffect on page load make an api call that sets the items from GET Products
+  //useEffect on page load make an api call that sets the products from our GET /products route
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -14,13 +14,11 @@ export const ProductList = () => {
   }, [dispatch]);
   const products = useSelector((state) => state.products.productsToShow);
   const count = useSelector((state) => state.products.count);
+  // our current query to the db is passed from the backend this allows us to make sure our pagination api calls remains consistent
   const productQuery = useSelector((state) => state.products.productQuery);
-  console.log(products);
-  console.log(count);
-  console.log(productQuery);
-  // use asyncThunk from redux store that is a get request
-
-  let paginationButtons = (query) => {
+  //pagination buttons are used to pass an api call to that particular page of product results
+  // in other words when a page number is clicked it will make an api call to show that particular page of results
+  let paginationButtons = () => {
     let buttons = [];
     for (let i = 0; i < count; i++) {
       if (i % 9 == 0) {

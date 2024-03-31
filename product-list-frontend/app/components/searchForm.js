@@ -12,7 +12,8 @@ export const SearchForm = () => {
   useEffect(() => {
     getCategories();
   }, []);
-
+  // api call to get a list of all available categories
+  // sets all options to a state variable
   const getCategories = async () => {
     try {
       let response = await axios.get(
@@ -23,13 +24,13 @@ export const SearchForm = () => {
       console.log(err);
     }
   };
-
+  // makes an api call using the selected category as a product filter
   const handleCategory = (e) => {
     let newCategory = e.target.value;
     setCategory(newCategory);
     dispatch(fetchProducts({ pageNum: 1, category: newCategory }));
   };
-
+  // makes an api call using the selected price for filtering (highest / lowest )
   const handlePrice = (e) => {
     let newPrice = e.target.value;
     setPrice(newPrice);
@@ -37,6 +38,8 @@ export const SearchForm = () => {
       fetchProducts({ pageNum: 1, category: category, price: newPrice })
     );
   };
+
+  //handles a query term we can use to search our products db for that specific product
   const handleQuery = (e) => {
     let newQuery = e.target.value;
     setQuery(newQuery);
@@ -59,6 +62,7 @@ export const SearchForm = () => {
           onChange={handleQuery}
         />
         <select className={styles.sortFilter} onChange={handleCategory}>
+          {/* all available options are mapped to our select box  */}
           <option value="#">Sort by Category</option>
           {options.map((option, i) => {
             return (
