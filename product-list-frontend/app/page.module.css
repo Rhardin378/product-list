@@ -7,6 +7,88 @@
   min-height: 100vh;
 }
 
+.searchForm {
+  display: flex;
+  justify-content: center;
+  margin: 40px auto;
+  gap: 10px;
+  text-align: center;
+}
+
+.searchBar {
+  width: 52%;
+  height: 2.5rem;
+}
+
+.sortFilter {
+  width: 12%;
+  height: 2.5rem;
+}
+.priceFilter {
+  width: 12%;
+  height: 2.5rem;
+}
+.section {
+  margin-left: 10%;
+  margin-right: 10%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 40px;
+}
+
+.noProducts {
+  text-align: center;
+  color: red;
+  margin-top: 20rem;
+}
+.productListItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+  margin: auto;
+  width: 25%;
+  padding: 15px;
+  background-color: rgb(7, 7, 240);
+}
+
+.productInfo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.productName {
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.productImage {
+  width: auto;
+}
+.productCategory {
+  display: flex;
+  justify-content: flex-start;
+}
+.productPrice {
+  font-weight: bold;
+}
+.categoryName {
+  margin-left: 5px;
+  font-weight: bold;
+}
+.button {
+  height: 30px;
+  width: 30px;
+}
+.buttons {
+  display: flex;
+  gap: 5px;
+  margin-top: 20px;
+
+  justify-content: center;
+}
 .description {
   display: inherit;
   justify-content: inherit;
@@ -207,24 +289,5 @@
 @media (min-width: 701px) and (max-width: 1120px) {
   .grid {
     grid-template-columns: repeat(2, 50%);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .vercelLogo {
-    filter: invert(1);
-  }
-
-  .logo {
-    filter: invert(1) drop-shadow(0 0 0.3rem #ffffff70);
-  }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
   }
 }
