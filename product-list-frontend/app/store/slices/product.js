@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const axios = require("axios");
-
+// our asyncThunk to create an api call to our /products endpoint
+// handles a pageNumber, category, price, and query as optional parameters
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async ({ pageNum = 1, category, price = "lowest", query = "" }) => {
@@ -16,7 +17,6 @@ export const fetchProducts = createAsyncThunk(
         },
       });
     } else {
-      console.log(category);
       response = await axios.get("http://localhost:8001/products/", {
         params: {
           page: pageNum,

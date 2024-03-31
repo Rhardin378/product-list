@@ -21,11 +21,23 @@ router.get("/generate-fake-data", (req, res, next) => {
   res.end();
 });
 // this route sends back a list of all distinct categories (unique categories)
+
 router.get("/products/categories", (req, res, next) => {
   Product.distinct("category").then((categories) => {
     res.send(categories);
   });
 });
+
+/*
+ * GET route to fetch products based on query parameters.
+ * Supports pagination, category filtering, price sorting, and partial search.
+ * Query Parameters:
+ *   - page: Pagination page number (default: 1)
+ *   - category: Filter products by category
+ *   - price: Sort products by price ("highest" or "lowest")
+ *   - query: Search query for partial matching on product names
+ * Returns an array of products, total count of products, and query parameters used.
+ */
 
 router.get("/products", (req, res, next) => {
   const productsPerPage = 9;
@@ -51,8 +63,6 @@ router.get("/products", (req, res, next) => {
         }));
       })
       .then(({ products, count, responseQuery }) => {
-        console.log(count);
-        console.log(price);
         if (price) {
           if (price === "highest") {
             products = products.sort((a, b) => b.price - a.price);
@@ -61,7 +71,6 @@ router.get("/products", (req, res, next) => {
           }
           res.send({ products, count, responseQuery });
         } else {
-          console.log(querySearch);
           res.send({ products, count, responseQuery });
         }
       })
@@ -104,6 +113,8 @@ router.get("/products", (req, res, next) => {
   }
 });
 
+// get a single product by id
+
 router.get("/products/:product/", (req, res, next) => {
   const productId = req.params.product;
   Product.findById(productId)
@@ -117,6 +128,7 @@ router.get("/products/:product/", (req, res, next) => {
     });
 });
 
+//get a single product's reviews
 router.get("/products/:product/reviews", (req, res, next) => {
   // if there is a page query it will take the page number and return 4 items associated with that page starting at the first index
   let reviewsPerPage = 4;
@@ -130,7 +142,6 @@ router.get("/products/:product/reviews", (req, res, next) => {
     },
   });
   product.then((product) => {
-    console.log(product.reviews.length);
     if (product.reviews < 1) {
       res.status(404).send("no reviews left");
     } else {
@@ -138,6 +149,8 @@ router.get("/products/:product/reviews", (req, res, next) => {
     }
   });
 });
+
+// add a product route
 
 router.post("/products", (req, res, next) => {
   const product = Product({
@@ -154,7 +167,7 @@ router.post("/products", (req, res, next) => {
     })
     .catch((err) => console.log(err));
 });
-
+// route to add a review to particular product
 router.post("/products/:product/reviews", (req, res, next) => {
   // find the product
   //access reviews of product
@@ -170,7 +183,7 @@ router.post("/products/:product/reviews", (req, res, next) => {
       });
       review.save();
       product.reviews.push(review);
-      console.log(product);
+
       product.save();
       res.status(200);
       console.log("review saved");
@@ -182,6 +195,8 @@ router.post("/products/:product/reviews", (req, res, next) => {
       res.status(404).end();
     });
 });
+
+//route to delete a product
 
 router.delete("/products/:product", (req, res, next) => {
   const foundProduct = Product.findByIdAndDelete(req.params.product);
@@ -200,6 +215,8 @@ router.delete("/products/:product", (req, res, next) => {
       res.end();
     });
 });
+
+// route to delete a review from a product
 
 router.delete("/products/:product/:review", (req, res, next) => {
   //find review that has product field
