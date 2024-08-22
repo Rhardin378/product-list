@@ -31,6 +31,7 @@ export const ProductList = () => {
               fetchProducts({
                 pageNum: pageNum,
                 category: productQuery.category,
+                price: productQuery.price,
               })
             )
           }
