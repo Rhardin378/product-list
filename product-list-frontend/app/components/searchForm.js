@@ -8,10 +8,13 @@ export const SearchForm = () => {
   const [price, setPrice] = useState("");
   const [query, setQuery] = useState("");
   const [options, setOptions] = useState([]);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     getCategories();
   }, []);
+
   // api call to get a list of all available categories
   // sets all options to a state variable
   const getCategories = async () => {
@@ -28,14 +31,16 @@ export const SearchForm = () => {
   const handleCategory = (e) => {
     let newCategory = e.target.value;
     setCategory(newCategory);
-    dispatch(fetchProducts({ pageNum: 1, category: newCategory }));
+    dispatch(
+      fetchProducts({ pageNum: 1, category: newCategory, price, query })
+    );
   };
   // makes an api call using the selected price for filtering (highest / lowest )
   const handlePrice = (e) => {
     let newPrice = e.target.value;
     setPrice(newPrice);
     dispatch(
-      fetchProducts({ pageNum: 1, category: category, price: newPrice })
+      fetchProducts({ pageNum: 1, category: category, price: newPrice, query })
     );
   };
 

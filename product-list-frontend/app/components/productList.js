@@ -20,39 +20,24 @@ export const ProductList = () => {
   // in other words when a page number is clicked it will make an api call to show that particular page of results
   let paginationButtons = () => {
     let buttons = [];
-    for (let i = 0; i < count; i++) {
-      if (i % 9 == 0) {
-        if (i == 0) {
-          buttons.push(
-            <button
-              className={styles.button}
-              onClick={() =>
-                dispatch(
-                  fetchProducts({ pageNum: 1, category: productQuery.category })
-                )
-              }
-            >
-              {1}
-            </button>
-          );
-        } else {
-          buttons.push(
-            <button
-              className={styles.button}
-              onClick={() =>
-                dispatch(
-                  fetchProducts({
-                    pageNum: i / 9 + 1,
-                    category: productQuery.category,
-                  })
-                )
-              }
-            >
-              {i / 9 + 1}
-            </button>
-          );
-        }
-      }
+    const totalPages = Math.ceil(count / 9);
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      buttons.push(
+        <button
+          key={pageNum}
+          className={styles.button}
+          onClick={() =>
+            dispatch(
+              fetchProducts({
+                pageNum: pageNum,
+                category: productQuery.category,
+              })
+            )
+          }
+        >
+          {pageNum}
+        </button>
+      );
     }
     return buttons;
   };

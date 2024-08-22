@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const faker = require("faker");
 const Product = require("../models/product");
+
 const Review = require("../models/review");
 
 //an api call to generate fake data to populate our store
@@ -39,77 +40,31 @@ router.get("/products/categories", (req, res, next) => {
  * Returns an array of products, total count of products, and query parameters used.
  */
 
-router.get("/products", (req, res, next) => {
+router.get("/products", async (req, res, next) => {
   const productsPerPage = 9;
-  let querySearch;
-  let { page = 1, category, price, query } = req.query;
-  let responseQuery = { page, category, price, query };
-  if (!query) {
-    querySearch = {};
-  } else {
-    //regex to allow to for a partial search instead of exact search
-    let regexPattern = new RegExp(query, "i");
-    querySearch = { name: { $regex: regexPattern } };
-  }
-  if (!category) {
-    Product.find(querySearch)
-      .skip(productsPerPage * page - productsPerPage)
-      .limit(productsPerPage)
-      .then((products) => {
-        return Product.countDocuments(querySearch).then((count) => ({
-          products,
-          count,
-          responseQuery,
-        }));
-      })
-      .then(({ products, count, responseQuery }) => {
-        if (price) {
-          if (price === "highest") {
-            products = products.sort((a, b) => b.price - a.price);
-          } else {
-            products = products.sort((a, b) => a.price - b.price);
-          }
-          res.send({ products, count, responseQuery });
-        } else {
-          res.send({ products, count, responseQuery });
-        }
-      })
-      .catch((err) => {
-        // Handle errors
-        console.log(err);
-        res.end();
-      });
-  } else {
-    Product.find({ category: category, ...querySearch })
-      .skip(productsPerPage * page - productsPerPage)
-      .limit(productsPerPage)
-      .then((products) => {
-        return Product.countDocuments({
-          category: category,
-          ...querySearch,
-        }).then((count) => ({
-          products,
-          count,
-          responseQuery,
-        }));
-      })
-      .then(({ products, count, responseQuery }) => {
-        if (price) {
-          if (price === "highest") {
-            products = products.sort((a, b) => b.price - a.price);
-          } else {
-            products = products.sort((a, b) => a.price - b.price);
-          }
-          res.send({ products, count, responseQuery });
-        } else {
-          res.send({ products, count, responseQuery });
-        }
-      })
-      .catch((err) => {
-        // Handle errors
-        console.log(err);
-        res.end();
-      });
+  const { page = 1, category, price, query } = req.query;
+  const responseQuery = { page, category, price, query };
+
+  const querySearch = query ? { name: { $regex: new RegExp(query, "i") } } : {};
+  const filter = category ? { category, ...querySearch } : querySearch;
+
+  try {
+    const products = await Product.find(filter)
+      .skip(productsPerPage * (page - 1))
+      .limit(productsPerPage);
+
+    const count = await Product.countDocuments(filter);
+
+    if (price) {
+      products.sort((a, b) =>
+        price === "highest" ? b.price - a.price : a.price - b.price
+      );
+    }
+
+    res.status(200).send({ products, count, responseQuery });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching products");
   }
 });
 
